@@ -15,6 +15,9 @@ const GameGrid = () => {
     const [grid, setGrid] = useState(buildGrid(GRID_X_LENGTH, GRID_Y_LENGTH));
     const [currentPiece, setCurrentPiece] = useState(buildPiece(grid));
     const [intervalId, setIntervalId] = useState("");
+    const [gameOver, setGameOver] = useState(false);
+
+    const clearFall = () => setIntervalId(clearInterval);
 
     const beginFall = () => {
         const temp = setInterval(() => {
@@ -22,12 +25,9 @@ const GameGrid = () => {
             setCurrentPiece(oldPiece => {
                 if (oldPiece.obsticleBottom()) {
                     setGrid(renderPieceToGrid(grid, oldPiece));
-                    setIntervalId(oldId => {
-                        clearInterval(oldId);
-                        return "";
-                    });
+                    clearFall();
                     handleNewPiece();
-                    return buildPiece(grid);
+                    return oldPiece;
                 }
                 return moveDown(oldPiece);
             });
@@ -35,8 +35,17 @@ const GameGrid = () => {
         setIntervalId(temp);
     };
     const handleNewPiece = () => {
-        setCurrentPiece(buildPiece(grid));
-        beginFall();
+        setCurrentPiece(oldPiece => {
+            const newPiece = buildPiece(grid);
+            if (newPiece.checkGameOver()) {
+                clearFall();
+                setGameOver(true);
+                return oldPiece;
+            } else {
+                beginFall();
+                return newPiece;
+            }
+        });
     };
 
     useLayoutEffect(() => {
@@ -45,24 +54,27 @@ const GameGrid = () => {
     }, []);
 
     return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <ul>
-                {grid.map((xs, gridX) => (
-                    <Column key={gridX}>
-                        {xs.map((color, gridY) => (
-                            <Square
-                                key={gridY}
-                                color={
-                                    currentPiece?.intercects([gridX, gridY])
-                                        ? currentPiece.color
-                                        : color
-                                }
-                            />
-                        ))}
-                    </Column>
-                ))}
-            </ul>
-        </div>
+        <>
+            {gameOver && <div> YOU LOST!!!!! </div>}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <ul>
+                    {grid.map((xs, gridX) => (
+                        <Column key={gridX}>
+                            {xs.map((color, gridY) => (
+                                <Square
+                                    key={gridY}
+                                    color={
+                                        currentPiece?.intercects([gridX, gridY])
+                                            ? currentPiece.color
+                                            : color
+                                    }
+                                />
+                            ))}
+                        </Column>
+                    ))}
+                </ul>
+            </div>
+        </>
     );
 };
 

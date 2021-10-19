@@ -1,4 +1,4 @@
-import {shapes, colors} from './shapesAndColors';
+import { shapes, colors } from "./shapesAndColors";
 
 const getRandomItem = arr => arr[Math.floor(Math.random() * arr.length)];
 const getRandomInt = max => Math.floor(Math.random() * max);
@@ -26,6 +26,9 @@ export const buildPiece = grid => {
             return this.coords.some(
                 ([x, y]) => this.grid[x + 1]?.[y] !== "white"
             );
+        },
+        checkGameOver() {
+            return this.coords.some(([x, y]) => this.grid[x]?.[y] !== "white");
         },
     };
 };
