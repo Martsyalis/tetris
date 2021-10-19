@@ -23,13 +23,33 @@ export const renderPieceToGrid = (grid, piece) => {
     });
     return newGrid;
 };
-
-export const asyncWait = ms =>
-    new Promise(resolve =>
-        setTimeout(() => {
-            resolve("done!");
-        }, ms)
-    );
+// Grid => Boolean
+const levelFull = grid => !grid.some(xs => xs[xs.length - 1] === "white");
+const clearBottom = grid => {
+    const gridClone = [...grid];
+    const cleared = gridClone.map(xs => {
+        xs.pop();
+        xs.unshift("white");
+        return xs;
+    });
+    return cleared;
+};
+export const scoreGrid = (grid, setScore) => {
+    if (levelFull(grid)) {
+        const newGrid = clearBottom(grid);
+        setScore(score => score + 100);
+        return scoreGrid(newGrid, setScore);
+    } else {
+        return grid;
+    }
+};
+// export const scoreGrid = (setGrid, setScore) => {
+//     setGrid(oldGrid => {
+//         const handleReturns = handleGrid(oldGrid, setScore);
+//         console.log(handleReturns);
+//         return oldGrid;
+//     });
+// };
 
 export const attachControls = setCurrentPiece => {
     document.addEventListener("keydown", e => {

@@ -5,6 +5,7 @@ import {
     renderPieceToGrid,
     moveDown,
     attachControls,
+    scoreGrid,
 } from "../../gameLogic";
 import { buildPiece } from "../../gameLogic/Piece";
 const GRID_X_LENGTH = 12;
@@ -15,21 +16,13 @@ const GameGrid = () => {
     const [currentPiece, setCurrentPiece] = useState(buildPiece(grid));
     const [_, setIntervalId] = useState("");
     const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
 
     const clearFall = () => setIntervalId(clearInterval);
 
     const beginFall = () => {
         const temp = setInterval(() => {
-            setIntervalId(() => temp);
-            setCurrentPiece(oldPiece => {
-                if (oldPiece.obsticleBottom()) {
-                    setGrid(renderPieceToGrid(grid, oldPiece));
-                    clearFall();
-                    handleNewPiece();
-                    return oldPiece;
-                }
-                return moveDown(oldPiece);
-            });
+            setCurrentPiece(moveDown);
         }, 500);
         setIntervalId(temp);
     };
@@ -49,13 +42,31 @@ const GameGrid = () => {
     };
 
     useLayoutEffect(() => {
+        if (currentPiece.obsticleBottom()) {
+            setGrid(oldGrid => {
+                const newGrid = renderPieceToGrid(oldGrid, currentPiece);
+                const scoredGrid = scoreGrid(newGrid, setScore);
+                const newPiece = buildPiece(scoredGrid);
+                if (newPiece.checkGameOver()) {
+                    clearFall();
+                    setGameOver(true);
+                    return scoredGrid;
+                }
+                setCurrentPiece(newPiece);
+                return scoredGrid;
+            });
+        }
+    }, [currentPiece]);
+
+    useLayoutEffect(() => {
         attachControls(setCurrentPiece, grid);
         handleNewPiece();
     }, []);
 
     return (
         <>
-            {gameOver && <div> YOU LOST!!!!! </div>}
+            <h1>Your Score: {score}</h1>
+            {gameOver && <h1> YOU LOST!!!!! </h1>}
             <GridDisplay currentPiece={currentPiece} grid={grid} />
         </>
     );
