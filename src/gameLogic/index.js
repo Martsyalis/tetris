@@ -43,13 +43,7 @@ export const scoreGrid = (grid, setScore) => {
         return grid;
     }
 };
-// export const scoreGrid = (setGrid, setScore) => {
-//     setGrid(oldGrid => {
-//         const handleReturns = handleGrid(oldGrid, setScore);
-//         console.log(handleReturns);
-//         return oldGrid;
-//     });
-// };
+
 
 export const attachControls = setCurrentPiece => {
     document.addEventListener("keydown", e => {

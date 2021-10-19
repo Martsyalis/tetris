@@ -21,24 +21,8 @@ const GameGrid = () => {
     const clearFall = () => setIntervalId(clearInterval);
 
     const beginFall = () => {
-        const temp = setInterval(() => {
-            setCurrentPiece(moveDown);
-        }, 500);
+        const temp = setInterval(() => setCurrentPiece(moveDown), 500);
         setIntervalId(temp);
-    };
-
-    const handleNewPiece = () => {
-        setCurrentPiece(oldPiece => {
-            const newPiece = buildPiece(grid);
-            if (newPiece.checkGameOver()) {
-                clearFall();
-                setGameOver(true);
-                return oldPiece;
-            } else {
-                beginFall();
-                return newPiece;
-            }
-        });
     };
 
     useLayoutEffect(() => {
@@ -60,7 +44,7 @@ const GameGrid = () => {
 
     useLayoutEffect(() => {
         attachControls(setCurrentPiece, grid);
-        handleNewPiece();
+        beginFall();
     }, []);
 
     return (
