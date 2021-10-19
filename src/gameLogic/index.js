@@ -15,6 +15,14 @@ export const moveDown = getMoveByDiff([0, +1]);
 export const moveLeft = getMoveByDiff([-1, 0]);
 export const moveRight = getMoveByDiff([1, 0]);
 
+// TODO: figure out transformational pattern for rotation 
+// export const rotate = piece => {
+//     return {
+//         ...piece,
+//         coords: piece.coords.map(([x, y]) => [y, x]),
+//     };
+// };
+
 // (Grid, Piece) => Grid
 export const renderPieceToGrid = (grid, piece) => {
     const newGrid = [...grid];
@@ -44,7 +52,6 @@ export const scoreGrid = (grid, setScore) => {
     }
 };
 
-
 export const attachControls = setCurrentPiece => {
     document.addEventListener("keydown", e => {
         switch (e.key) {
@@ -62,6 +69,10 @@ export const attachControls = setCurrentPiece => {
                 setCurrentPiece(oldPiece =>
                     !oldPiece.obsticleBottom() ? moveDown(oldPiece) : oldPiece
                 );
+                break;
+
+            case "e":
+                // setCurrentPiece(rotate);
                 break;
             default:
                 console.log(e);

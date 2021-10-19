@@ -1,6 +1,6 @@
 import { shapes, colors } from "./shapesAndColors";
 
-const getRandomItem = arr => arr[Math.floor(Math.random() * 1)];
+const getRandomItem = arr => arr[Math.floor(Math.random() * arr.length)];
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 export const buildPiece = grid => {
