@@ -15,7 +15,7 @@ export const moveDown = getMoveByDiff([0, +1]);
 export const moveLeft = getMoveByDiff([-1, 0]);
 export const moveRight = getMoveByDiff([1, 0]);
 
-// TODO: figure out transformational pattern for rotation 
+// TODO: figure out transformational pattern for rotation
 // export const rotate = piece => {
 //     return {
 //         ...piece,
@@ -32,24 +32,24 @@ export const renderPieceToGrid = (grid, piece) => {
     return newGrid;
 };
 // Grid => Boolean
-const levelFull = grid => !grid.some(xs => xs[xs.length - 1] === "white");
-const clearBottom = grid => {
-    const gridClone = [...grid];
-    const cleared = gridClone.map(xs => {
-        xs.pop();
+const levelFull = (grid, level) => !grid.some(xs => xs[level] === "white");
+
+const clearLevel = (grid, level) =>
+    grid.map(xs => {
+        xs.splice(level, 1);
         xs.unshift("white");
         return xs;
     });
-    return cleared;
-};
+
 export const scoreGrid = (grid, setScore) => {
-    if (levelFull(grid)) {
-        const newGrid = clearBottom(grid);
-        setScore(score => score + 100);
-        return scoreGrid(newGrid, setScore);
-    } else {
-        return grid;
-    }
+    const gridClone = [...grid];
+    gridClone[0].forEach((_, level) => {
+        if (levelFull(gridClone, level)) {
+            clearLevel(gridClone, level);
+            setScore(score => score + 100);
+        }
+    });
+    return gridClone;
 };
 
 export const attachControls = setCurrentPiece => {
